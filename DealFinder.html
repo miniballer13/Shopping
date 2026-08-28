@@ -1,0 +1,1228 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>DealFinder — Find the Best Deal. Anywhere.</title>
+<style>
+  :root{
+    --bg:#f8fafc; --card:#ffffff; --border:#e2e8f0; --text:#0f172a; --muted:#64748b;
+    --brand:#2b5cf5; --brand-dark:#1c43d1; --brand-light:#eef4ff;
+    --green:#059669; --green-bg:#ecfdf5; --amber:#b45309; --amber-bg:#fffbeb;
+    --red:#dc2626; --red-bg:#fef2f2; --violet:#6d28d9; --violet-bg:#f5f3ff;
+    --shadow:0 1px 2px rgba(15,23,42,0.04),0 8px 24px -6px rgba(15,23,42,0.10);
+    --shadow-hover:0 4px 10px rgba(15,23,42,0.06),0 16px 32px -8px rgba(15,23,42,0.16);
+    --radius:1rem;
+  }
+  html.dark{
+    --bg:#020617; --card:#0f172a; --border:#1e293b; --text:#f1f5f9; --muted:#94a3b8;
+    --brand-light:#0f2157; --green-bg:#052e21; --amber-bg:#2b1c04; --red-bg:#2a0a0a; --violet-bg:#1e123f;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;transition:background .2s,color .2s;}
+  a{color:inherit;}
+  .wrap{max-width:1152px;margin:0 auto;padding:0 16px;}
+  header.site{position:sticky;top:0;z-index:30;background:color-mix(in srgb, var(--bg) 85%, transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);}
+  header.site .inner{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;max-width:1152px;margin:0 auto;}
+  .logo{display:flex;align-items:center;gap:8px;}
+  .logo .mark{width:32px;height:32px;border-radius:8px;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;}
+  .logo .name{font-size:18px;font-weight:600;letter-spacing:-0.01em;}
+  .badge-demo{margin-left:8px;background:var(--amber-bg);color:var(--amber);font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px;}
+  .header-actions{display:flex;gap:8px;}
+  .icon-btn{border:1px solid var(--border);background:var(--card);border-radius:10px;padding:8px 12px;font-size:14px;cursor:pointer;color:var(--text);position:relative;}
+  .icon-btn:hover{background:var(--brand-light);}
+  .count-pill{position:absolute;top:-8px;right:-8px;background:var(--brand);color:#fff;border-radius:999px;min-width:20px;height:20px;font-size:11px;display:flex;align-items:center;justify-content:center;padding:0 4px;}
+
+  main{max-width:1152px;margin:0 auto;padding:40px 16px 64px;}
+  .hero{max-width:640px;margin:0 auto;text-align:center;}
+  .hero h1{font-size:34px;font-weight:800;letter-spacing:-0.02em;margin:0;}
+  .hero p{color:var(--muted);margin-top:10px;font-size:16px;}
+
+  .search-wrap{max-width:640px;margin:24px auto 0;}
+  .search-label{display:block;text-align:center;font-size:14px;font-weight:500;color:var(--muted);margin-bottom:8px;}
+  .search-box{display:flex;gap:8px;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:8px;box-shadow:var(--shadow);flex-wrap:wrap;}
+  .search-box input[type=text]{flex:1;min-width:200px;border:0;background:transparent;padding:12px 16px;font-size:16px;outline:none;color:var(--text);}
+  .btn-primary{background:var(--brand);color:#fff;border:0;border-radius:12px;padding:12px 24px;font-size:16px;font-weight:600;cursor:pointer;}
+  .btn-primary:hover{background:var(--brand-dark);}
+  .btn-primary:disabled{opacity:.5;cursor:not-allowed;}
+  .zip-row{display:flex;justify-content:center;margin-top:8px;}
+  .zip-link{background:none;border:0;color:var(--brand);font-size:12px;font-weight:500;cursor:pointer;}
+  .zip-input{width:160px;border:1px solid var(--border);border-radius:8px;padding:6px 10px;font-size:13px;background:var(--card);color:var(--text);}
+
+  .panel{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);}
+  .panel + .panel{margin-top:16px;}
+  .panel h3{margin:0 0 12px;font-size:14px;font-weight:600;}
+  .panel-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+  .link-btn{background:none;border:0;color:var(--brand);font-size:12px;font-weight:600;cursor:pointer;}
+  .link-btn.muted{color:var(--muted);}
+
+  .src-group h4{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:0 0 8px;}
+  .src-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;}
+  @media(min-width:640px){.src-grid{grid-template-columns:1fr 1fr 1fr;}}
+  .src-grid label{display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;}
+  .src-grid label input{accent-color:var(--brand);}
+  .demo-tag{font-size:10px;color:var(--muted);}
+
+  .stages-box{max-width:420px;margin:40px auto 0;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);}
+  .stages-box p.status{text-align:center;font-size:13px;color:var(--muted);margin:0 0 16px;}
+  .stage{display:flex;align-items:center;gap:10px;font-size:14px;padding:6px 0;color:var(--muted);}
+  .stage.active{color:var(--text);}
+  .stage.done{color:var(--text);}
+  .stage .dot{width:20px;height:20px;border-radius:999px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;}
+  .stage.done .dot{background:var(--brand);color:#fff;border-color:var(--brand);}
+  .stage.active .dot{border:2px solid var(--brand);color:var(--brand);}
+  .pulse{width:6px;height:6px;border-radius:999px;background:var(--brand);margin-left:auto;animation:pulse 1s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+
+  .error-box{max-width:520px;margin:32px auto 0;background:var(--red-bg);border:1px solid #fecaca;border-radius:var(--radius);padding:20px;text-align:center;color:var(--red);font-weight:500;}
+  html.dark .error-box{border-color:#7f1d1d;}
+
+  .amb-box{max-width:640px;margin:32px auto 0;background:var(--amber-bg);border:1px solid #fde68a;border-radius:var(--radius);padding:20px;}
+  html.dark .amb-box{border-color:#78350f;}
+  .amb-box h3{margin:0 0 12px;color:var(--amber);}
+  .amb-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  @media(min-width:640px){.amb-grid{grid-template-columns:1fr 1fr 1fr;}}
+  .amb-card{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px;cursor:pointer;font-size:13px;font-weight:500;color:var(--text);}
+  .amb-card:hover{border-color:var(--brand);box-shadow:var(--shadow);}
+  .amb-card img{width:56px;height:56px;object-fit:cover;border-radius:8px;background:var(--bg);}
+
+  .results-layout{display:grid;grid-template-columns:1fr;gap:24px;margin-top:36px;}
+  @media(min-width:1024px){.results-layout{grid-template-columns:280px 1fr;}}
+  .sidebar{display:flex;flex-direction:column;gap:16px;}
+  .content{display:flex;flex-direction:column;gap:20px;}
+
+  .results-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;}
+  .results-head h2{margin:0;font-size:18px;font-weight:600;}
+  select{border:1px solid var(--border);border-radius:8px;padding:6px 10px;font-size:13px;background:var(--card);color:var(--text);}
+
+  .status-strip{border:1px solid var(--border);background:var(--bg);border-radius:10px;padding:8px 12px;font-size:12px;}
+  html.dark .status-strip{background:rgba(255,255,255,0.03);}
+  .status-strip button{width:100%;background:none;border:0;display:flex;justify-content:space-between;color:var(--muted);cursor:pointer;font-size:12px;font-family:inherit;}
+  .status-strip ul{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:4px;}
+  .status-strip li{display:flex;justify-content:space-between;}
+  .ok-txt{color:var(--green);} .warn-txt{color:var(--amber);}
+
+  .verdict-box{border-radius:var(--radius);padding:16px;border:1px solid;}
+  .verdict-good{background:var(--green-bg);border-color:#a7f3d0;}
+  .verdict-bad{background:var(--amber-bg);border-color:#fde68a;}
+  html.dark .verdict-good{border-color:#065f46;} html.dark .verdict-bad{border-color:#78350f;}
+  .verdict-box h3{margin:0 0 4px;font-size:13px;}
+  .verdict-title{font-size:16px;font-weight:700;}
+  .verdict-good .verdict-title{color:var(--green);} .verdict-bad .verdict-title{color:var(--amber);}
+  .verdict-box p.expl{margin:6px 0 0;font-size:14px;color:var(--muted);}
+
+  .compare-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center;margin-bottom:12px;}
+  .compare-grid .lab{font-size:11px;color:var(--muted);}
+  .compare-grid .val{font-size:18px;font-weight:700;}
+  .val.low{color:var(--green);} .val.high{color:var(--muted);}
+  .bar{position:relative;height:8px;border-radius:999px;background:linear-gradient(to right,#34d399,#fcd34d,#fca5a5);margin-bottom:6px;}
+  .bar .dot{position:absolute;top:50%;width:12px;height:12px;margin-top:-6px;margin-left:-6px;border-radius:999px;border:2px solid var(--card);box-shadow:0 0 0 1px var(--border);}
+  .save-line{text-align:center;font-size:13px;color:var(--green);font-weight:500;margin:8px 0 0;}
+
+  .empty-box{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:32px;text-align:center;color:var(--muted);}
+
+  .deal-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);}
+  .deal-card:hover{box-shadow:var(--shadow-hover);}
+  .badges-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
+  .deal-badge{display:inline-flex;align-items:center;gap:4px;background:var(--brand-light);color:var(--brand);font-size:11px;font-weight:600;padding:4px 10px;border-radius:999px;}
+  .deal-flex{display:flex;gap:16px;flex-wrap:wrap;}
+  .deal-img{width:112px;height:112px;border-radius:12px;background:var(--bg);overflow:hidden;flex-shrink:0;}
+  .deal-img img{width:100%;height:100%;object-fit:cover;}
+  .deal-mid{flex:1;min-width:220px;}
+  .deal-src{font-size:13px;font-weight:600;color:var(--muted);}
+  .deal-title{font-size:16px;font-weight:600;margin:2px 0 8px;}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;font-size:12px;align-items:center;}
+  .cond-chip{padding:2px 8px;border-radius:999px;font-weight:600;text-transform:capitalize;}
+  .cond-new{background:var(--green-bg);color:var(--green);}
+  .cond-used{background:var(--bg);color:var(--muted);border:1px solid var(--border);}
+  .cond-refurbished{background:#e0f2fe;color:#0369a1;} html.dark .cond-refurbished{background:#082f49;color:#7dd3fc;}
+  .cond-open-box{background:var(--violet-bg);color:var(--violet);}
+  .meta-row{margin-top:8px;font-size:12px;color:var(--muted);display:flex;flex-wrap:wrap;gap:12px;}
+  .avail-in{color:var(--green);} .avail-limited{color:var(--amber);} .avail-out{color:var(--red);}
+  .deal-right{display:flex;flex-direction:column;align-items:flex-end;justify-content:space-between;min-width:160px;}
+  .total-price{font-size:24px;font-weight:800;text-align:right;}
+  .total-price .lab{font-size:11px;font-weight:400;color:var(--muted);}
+  .est-flag{font-size:11px;font-weight:600;color:var(--amber);text-align:right;}
+  .item-price{font-size:12px;color:var(--muted);text-align:right;margin-top:2px;}
+  .view-btn{margin-top:10px;display:block;width:100%;text-align:center;background:var(--brand);color:#fff;padding:9px 16px;border-radius:10px;font-size:13px;font-weight:600;text-decoration:none;}
+  .view-btn:hover{background:var(--brand-dark);}
+  .heart-btn{background:none;border:0;font-size:18px;cursor:pointer;color:var(--border);}
+  .heart-btn.on{color:#e11d48;}
+  .calc-toggle{margin-top:10px;background:none;border:0;color:var(--brand);font-size:12px;font-weight:600;cursor:pointer;}
+  .calc-box{margin-top:8px;background:var(--bg);border-radius:10px;padding:10px 12px;font-size:13px;}
+  .calc-row{display:flex;justify-content:space-between;padding:2px 0;}
+  .calc-row .note{font-size:11px;color:var(--muted);}
+  .calc-row .est{color:var(--amber);font-weight:600;}
+  .calc-total{display:flex;justify-content:space-between;border-top:1px solid var(--border);margin-top:6px;padding-top:6px;font-weight:700;}
+
+  .similar h2{font-size:18px;font-weight:600;margin:0 0 12px;}
+  .similar-grid{display:grid;grid-template-columns:1fr;gap:16px;}
+  @media(min-width:640px){.similar-grid{grid-template-columns:1fr 1fr;}}
+  @media(min-width:1024px){.similar-grid{grid-template-columns:1fr 1fr 1fr;}}
+  .similar-card{position:relative;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow);}
+  .similar-card img{width:100%;height:120px;object-fit:cover;border-radius:10px;background:var(--bg);margin-bottom:10px;}
+  .alt-flag{position:absolute;top:10px;right:10px;background:var(--green-bg);color:var(--green);font-size:10px;font-weight:700;padding:3px 8px;border-radius:999px;}
+  .similar-card .src{font-size:11px;color:var(--muted);}
+  .similar-card .name{font-size:14px;font-weight:600;margin:2px 0 6px;}
+  .similar-card .price{font-size:18px;font-weight:700;}
+  .similar-card .price .lab{font-size:11px;font-weight:400;color:var(--muted);}
+  .similar-card .diff{font-size:12px;color:var(--muted);margin-top:6px;}
+  .similar-card .why{font-size:12px;color:var(--muted);font-style:italic;margin-top:4px;}
+  .out-link{margin-top:10px;display:block;text-align:center;border:1px solid var(--brand);color:var(--brand);padding:6px 12px;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none;}
+  .out-link:hover{background:var(--brand-light);}
+
+  .filters .row{margin-bottom:14px;}
+  .filters label.small{display:block;font-size:11px;font-weight:500;color:var(--muted);margin-bottom:4px;}
+  .filters input[type=number],.filters select{width:100%;border:1px solid var(--border);border-radius:8px;padding:6px 10px;font-size:13px;background:var(--card);color:var(--text);}
+  .cond-toggles{display:flex;flex-wrap:wrap;gap:6px;}
+  .cond-btn{border:1px solid var(--border);background:var(--card);border-radius:999px;padding:4px 12px;font-size:12px;font-weight:500;cursor:pointer;text-transform:capitalize;color:var(--text);}
+  .cond-btn.active{background:var(--brand);border-color:var(--brand);color:#fff;}
+  .filters .check-row{display:flex;align-items:center;gap:8px;font-size:13px;margin-bottom:8px;}
+  .filters .check-row input{accent-color:var(--brand);}
+  .filter-count{margin-top:12px;font-size:12px;color:var(--muted);}
+
+  .hist-chip{border:1px solid var(--border);background:var(--card);border-radius:999px;padding:5px 12px;font-size:12px;cursor:pointer;color:var(--text);}
+  .hist-chip:hover{border-color:var(--brand);color:var(--brand);}
+  .hist-wrap{display:flex;flex-wrap:wrap;gap:8px;}
+
+  .drawer-overlay{position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:40;display:none;}
+  .drawer-overlay.open{display:block;}
+  .drawer{position:fixed;top:0;right:0;bottom:0;width:100%;max-width:380px;background:var(--card);z-index:41;box-shadow:-8px 0 24px rgba(0,0,0,.15);padding:20px;transform:translateX(100%);transition:transform .25s;overflow-y:auto;}
+  .drawer.open{transform:translateX(0);}
+  .drawer-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+  .drawer-head h2{margin:0;font-size:18px;}
+  .close-btn{background:none;border:0;font-size:18px;cursor:pointer;color:var(--muted);}
+  .wl-item{display:flex;gap:10px;border:1px solid var(--border);border-radius:12px;padding:10px;margin-bottom:10px;}
+  .wl-item img{width:52px;height:52px;object-fit:cover;border-radius:8px;background:var(--bg);}
+  .wl-item .mid{flex:1;min-width:0;}
+  .wl-item .mid p{margin:0;}
+  .wl-item .src{font-size:11px;color:var(--muted);}
+  .wl-item .title{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .wl-item .price{font-size:14px;font-weight:700;}
+  .wl-item .date{font-size:10px;color:var(--muted);}
+  .wl-item .right{display:flex;flex-direction:column;align-items:flex-end;justify-content:space-between;}
+  .remove-link{background:none;border:0;color:var(--muted);font-size:11px;cursor:pointer;}
+  .remove-link:hover{color:var(--red);}
+
+  footer.disclaimer{max-width:700px;margin:0 auto;padding:32px 16px;text-align:center;font-size:12px;color:var(--muted);}
+
+  .fade-up{animation:fadeUp .3s ease-out;}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="inner">
+    <div class="logo">
+      <div class="mark">D</div>
+      <span class="name">DealFinder</span>
+      <span class="badge-demo">Demo Mode</span>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" id="darkToggle" title="Toggle dark mode">🌙</button>
+      <button class="icon-btn" id="watchlistToggle">♡ Watchlist<span class="count-pill" id="wlCount" style="display:none">0</span></button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div id="heroSection" class="hero">
+    <h1>Find the Best Deal. Anywhere.</h1>
+    <p>Search retailers and marketplaces to find the lowest real price — including shipping.</p>
+  </div>
+
+  <div class="search-wrap" id="searchWrap">
+    <label class="search-label" for="searchInput">What are you looking for?</label>
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="e.g. Apple AirPods Pro 2 USB-C — or paste a product URL" autocomplete="off" />
+      <button class="btn-primary" id="searchBtn">Find Best Deals</button>
+    </div>
+    <div class="zip-row" id="zipRow">
+      <button class="zip-link" id="zipLinkBtn">+ Add ZIP code for more accurate shipping, tax &amp; local pickup results</button>
+    </div>
+  </div>
+
+  <div id="preSearchArea" style="max-width:720px;margin:32px auto 0;display:flex;flex-direction:column;gap:16px;">
+    <div class="panel" id="sourcesPanelPre"></div>
+    <div class="panel" id="historyPanel" style="display:none"></div>
+  </div>
+
+  <div id="loadingArea"></div>
+  <div id="errorArea"></div>
+  <div id="ambiguousArea"></div>
+  <div id="resultsArea"></div>
+</main>
+
+<footer class="disclaimer">
+  Prices and availability can change. Shipping, taxes, and fees may vary at checkout. Always verify the final price
+  on the seller's website before purchasing. DealFinder is running in <strong>Demo Mode</strong> with simulated data
+  for illustration.
+</footer>
+
+<div class="drawer-overlay" id="drawerOverlay"></div>
+<div class="drawer" id="watchlistDrawer">
+  <div class="drawer-head">
+    <h2>Watchlist</h2>
+    <button class="close-btn" id="drawerClose">✕</button>
+  </div>
+  <div id="watchlistItems"></div>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* =========================================================================
+   1. SOURCE REGISTRY — metadata for every marketplace/retailer, including
+      how each would legitimately be integrated in a live version.
+   ========================================================================= */
+const SOURCES = [
+  {id:'amazon', label:'Amazon', category:'retailer', supportsLocalPickup:false, integration:'Amazon Product Advertising API (Associates account required).'},
+  {id:'walmart', label:'Walmart', category:'retailer', supportsLocalPickup:false, integration:'Walmart Open API (walmart.io).'},
+  {id:'target', label:'Target', category:'retailer', supportsLocalPickup:false, integration:'No public retail API; use a compliant third-party shopping data provider.'},
+  {id:'bestbuy', label:'Best Buy', category:'retailer', supportsLocalPickup:false, integration:'Best Buy Products API (developer.bestbuy.com).'},
+  {id:'ebay', label:'eBay', category:'marketplace', supportsLocalPickup:false, integration:'eBay Browse/Finding API (eBay Developers Program).'},
+  {id:'facebook-marketplace', label:'Facebook Marketplace', category:'marketplace', supportsLocalPickup:true, integration:'No public listings API from Meta; demo-only until one exists.'},
+  {id:'homedepot', label:'Home Depot', category:'retailer', supportsLocalPickup:false, integration:'No public retail API; use a compliant third-party data provider.'},
+  {id:'lowes', label:"Lowe's", category:'retailer', supportsLocalPickup:false, integration:'No public retail API; use a compliant third-party data provider.'},
+  {id:'costco', label:'Costco', category:'retailer', supportsLocalPickup:false, integration:'No public retail API; use a compliant third-party data provider.'},
+  {id:'newegg', label:'Newegg', category:'retailer', supportsLocalPickup:false, integration:'Newegg Marketplace / affiliate feed API.'},
+  {id:'bh', label:'B&H Photo', category:'retailer', supportsLocalPickup:false, integration:'B&H affiliate product feed.'},
+  {id:'mercari', label:'Mercari', category:'marketplace', supportsLocalPickup:true, integration:'No public listings API for third parties today; demo-only.'},
+  {id:'offerup', label:'OfferUp', category:'marketplace', supportsLocalPickup:true, integration:'No public listings API for third parties today; demo-only.'},
+  {id:'etsy', label:'Etsy', category:'marketplace', supportsLocalPickup:false, integration:'Etsy Open API v3.'},
+  {id:'aliexpress', label:'AliExpress', category:'marketplace', supportsLocalPickup:false, integration:'AliExpress Affiliate API.'},
+  {id:'google-shopping', label:'Google Shopping', category:'aggregator', supportsLocalPickup:false, integration:'Google Content API for Shopping / compliant search API.'}
+];
+const ALL_SOURCE_IDS = SOURCES.map(s=>s.id);
+const SOURCE_MAP = Object.fromEntries(SOURCES.map(s=>[s.id,s]));
+
+/* =========================================================================
+   2. PRODUCT CATALOG — used for text/URL matching and "which did you mean".
+   ========================================================================= */
+const CATALOG = [
+  {id:'airpods-pro-2-usbc', family:'AirPods Pro', label:'Apple AirPods Pro 2 (USB-C)', keywords:['airpods','pro','2','usbc','usb-c','usb c'], img:'https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=600&q=80', basePrice:249, category:'Audio'},
+  {id:'airpods-pro-2-lightning', family:'AirPods Pro', label:'Apple AirPods Pro 2 (Lightning)', keywords:['airpods','pro','2','lightning'], img:'https://images.unsplash.com/photo-1588423771073-b8903fbb85b5?w=600&q=80', basePrice:229, category:'Audio'},
+  {id:'airpods-4', family:'AirPods', label:'Apple AirPods 4', keywords:['airpods','4','fourth','gen'], img:'https://images.unsplash.com/photo-1606220838315-056192d5e927?w=600&q=80', basePrice:129, category:'Audio'},
+  {id:'airpods-4-anc', family:'AirPods', label:'Apple AirPods 4 with ANC', keywords:['airpods','4','anc','noisecancel','noise-cancel'], img:'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=600&q=80', basePrice:179, category:'Audio'},
+  {id:'sony-wf1000xm5', family:'Sony WF-1000XM5', label:'Sony WF-1000XM5', keywords:['sony','wf-1000xm5','wf1000xm5','xm5'], img:'https://images.unsplash.com/photo-1590658006821-04d5119c7f16?w=600&q=80', basePrice:279, category:'Audio'},
+  {id:'ps5-slim-disc', family:'PlayStation 5', label:'PlayStation 5 Slim (Disc Edition)', keywords:['ps5','playstation5','slim','disc'], img:'https://images.unsplash.com/photo-1607853202273-797f1c22a38e?w=600&q=80', basePrice:499, category:'Gaming'},
+  {id:'ps5-slim-digital', family:'PlayStation 5', label:'PlayStation 5 Slim (Digital Edition)', keywords:['ps5','playstation5','slim','digital'], img:'https://images.unsplash.com/photo-1621259182978-fbf93132d53d?w=600&q=80', basePrice:449, category:'Gaming'},
+  {id:'nintendo-switch-oled', family:'Nintendo Switch', label:'Nintendo Switch OLED', keywords:['switch','oled','nintendo'], img:'https://images.unsplash.com/photo-1662638418861-4b5e3e5e3f8e?w=600&q=80', basePrice:349, category:'Gaming'},
+  {id:'dyson-v15', family:'Dyson V15', label:'Dyson V15 Detect Cordless Vacuum', keywords:['dyson','v15','detect','vacuum'], img:'https://images.unsplash.com/photo-1558317374-067fb5f30001?w=600&q=80', basePrice:749, category:'Home'},
+  {id:'iphone-16-pro-128', family:'iPhone 16 Pro', label:'Apple iPhone 16 Pro (128GB)', keywords:['iphone','16','pro','128'], img:'https://images.unsplash.com/photo-1592286927505-1def25115481?w=600&q=80', basePrice:999, category:'Phones'},
+  {id:'iphone-16-pro-256', family:'iPhone 16 Pro', label:'Apple iPhone 16 Pro (256GB)', keywords:['iphone','16','pro','256'], img:'https://images.unsplash.com/photo-1592286927505-1def25115481?w=600&q=80', basePrice:1099, category:'Phones'}
+];
+
+function tokenize(input){
+  return input.toLowerCase().replace(/[^a-z0-9\s-]/g,' ').split(/\s+/).filter(Boolean);
+}
+function norm(s){ return s.replace(/\s|-/g,''); }
+function scoreVariant(v,tokens){
+  let score=0;
+  for(const t of tokens){ if(v.keywords.some(k=>norm(k)===norm(t))) score++; }
+  return score;
+}
+function matchProduct(query){
+  const tokens = tokenize(query);
+  if(tokens.length===0) return {best:null,candidates:[],ambiguous:false};
+  const scored = CATALOG.map(v=>({v,score:scoreVariant(v,tokens)})).filter(x=>x.score>0).sort((a,b)=>b.score-a.score);
+  if(scored.length===0) return {best:null,candidates:[],ambiguous:false};
+  const top = scored[0].score;
+  const tied = scored.filter(x=>x.score===top).map(x=>x.v);
+  const ambiguous = tied.length>1;
+  return { best: ambiguous?null:tied[0], candidates: ambiguous?tied:[], ambiguous };
+}
+function matchProductFromUrl(url){
+  try{ return matchProduct(decodeURIComponent(url).toLowerCase().replace(/[\/_.]/g,' ')); }
+  catch(e){ return {best:null,candidates:[],ambiguous:false}; }
+}
+function findSimilarFamilies(variant, limit){
+  return CATALOG.filter(v=>v.category===variant.category && v.family!==variant.family).slice(0,limit||3);
+}
+
+/* =========================================================================
+   3. DEMO PROVIDER FACTORY — deterministic seeded mock data per source.
+      To go live: replace generateListing()'s call site for a given source
+      with a real fetch() to that marketplace's API, keeping the same
+      DealResult shape. Nothing else in the app needs to change.
+   ========================================================================= */
+function seededRandom(seed){
+  let h = 1779033703 ^ seed.length;
+  for(let i=0;i<seed.length;i++){
+    h = Math.imul(h ^ seed.charCodeAt(i), 3432918353);
+    h = (h<<13) | (h>>>19);
+  }
+  return function(){
+    h = Math.imul(h ^ (h>>>16), 2246822519);
+    h = Math.imul(h ^ (h>>>13), 3266489917);
+    h ^= h>>>16;
+    return (h>>>0)/4294967296;
+  };
+}
+function pick(rand, arr){ return arr[Math.floor(rand()*arr.length)]; }
+function inRange(rand, range){ return range[0] + rand()*(range[1]-range[0]); }
+function round2(n){ return Math.round(n*100)/100; }
+function money(amount, isKnown, note){ return {amount, isKnown, note: note||null}; }
+
+const CONFIGS = {
+  amazon:{priceRange:[0.9,1.08],conditions:['new','used','refurbished'],freeShip:0.85,shipRange:[3.99,8.99],showsTax:true,taxRate:0.0725,feeChance:0,feeRange:[0,0],sellers:['Amazon.com','Sold by AnkerDirect','Sold by ElectroWorld'],officialChance:0.6,deliveryRange:[1,3],localOnly:false,returns:['30-day free returns','90-day returns (holiday window)'],countRange:[2,3],unavailChance:0.06},
+  walmart:{priceRange:[0.88,1.05],conditions:['new','refurbished'],freeShip:0.7,shipRange:[4.99,7.99],showsTax:true,taxRate:0.0725,feeChance:0,feeRange:[0,0],sellers:['Walmart.com','Sold by Vibe Electronics'],officialChance:0.75,deliveryRange:[2,5],localOnly:false,returns:['90-day returns'],countRange:[1,2],unavailChance:0.05},
+  target:{priceRange:[0.92,1.06],conditions:['new'],freeShip:0.65,shipRange:[5.99,8.99],showsTax:true,taxRate:0.0725,feeChance:0,feeRange:[0,0],sellers:['Target'],officialChance:1,deliveryRange:[2,5],localOnly:false,returns:['90-day returns','1-year with Target RedCard'],countRange:[1,1],unavailChance:0.08},
+  bestbuy:{priceRange:[0.93,1.1],conditions:['new','open-box'],freeShip:0.8,shipRange:[0,5.99],showsTax:true,taxRate:0.0725,feeChance:0,feeRange:[0,0],sellers:['Best Buy'],officialChance:1,deliveryRange:[1,4],localOnly:false,returns:['15-day returns','45-day returns (My Best Buy Plus)'],countRange:[1,2],unavailChance:0.05},
+  ebay:{priceRange:[0.6,0.98],conditions:['new','used','refurbished','open-box'],freeShip:0.55,shipRange:[2.99,12.99],showsTax:true,taxRate:0.0725,feeChance:0,feeRange:[0,0],sellers:['top-rated-electronics-99','dealhub_liquidation','certified-refurb-outlet'],officialChance:0.05,deliveryRange:[3,8],localOnly:false,returns:['30-day returns','14-day returns','No returns accepted'],countRange:[3,5],unavailChance:0.05},
+  'facebook-marketplace':{priceRange:[0.45,0.85],conditions:['used'],freeShip:0,shipRange:[0,0],showsTax:false,taxRate:0,feeChance:0,feeRange:[0,0],sellers:['Local Seller (Jordan T.)','Local Seller (M. Reyes)','Local Seller (Casey)'],officialChance:0,deliveryRange:[0,0],localOnly:true,returns:['No returns — inspect before buying'],countRange:[1,3],unavailChance:0.15},
+  homedepot:{priceRange:[0.9,1.05],conditions:['new'],freeShip:0.6,shipRange:[0,9.99],showsTax:true,taxRate:0.0725,feeChance:0,feeRange:[0,0],sellers:['The Home Depot'],officialChance:1,deliveryRange:[2,6],localOnly:false,returns:['90-day returns'],countRange:[0,1],unavailChance:0.3},
+  lowes:{priceRange:[0.9,1.05],conditions:['new'],freeShip:0.6,shipRange:[0,9.99],showsTax:true,taxRate:0.0725,feeChance:0,feeRange:[0,0],sellers:["Lowe's"],officialChance:1,deliveryRange:[2,6],localOnly:false,returns:['90-day returns'],countRange:[0,1],unavailChance:0.3},
+  costco:{priceRange:[0.85,1.0],conditions:['new'],freeShip:0.5,shipRange:[5.99,14.99],showsTax:true,taxRate:0.0725,feeChance:0,feeRange:[0,0],sellers:['Costco'],officialChance:1,deliveryRange:[3,7],localOnly:false,returns:['Costco satisfaction guarantee'],countRange:[0,1],unavailChance:0.35},
+  newegg:{priceRange:[0.88,1.05],conditions:['new','refurbished','open-box'],freeShip:0.65,shipRange:[0,9.99],showsTax:true,taxRate:0.0725,feeChance:0,feeRange:[0,0],sellers:['Newegg','Sold by TechLiquidators'],officialChance:0.5,deliveryRange:[2,6],localOnly:false,returns:['30-day returns (restocking fee may apply)'],countRange:[1,2],unavailChance:0.1},
+  bh:{priceRange:[0.92,1.06],conditions:['new','open-box'],freeShip:0.9,shipRange:[0,6.99],showsTax:true,taxRate:0.0725,feeChance:0,feeRange:[0,0],sellers:['B&H Photo Video'],officialChance:1,deliveryRange:[1,4],localOnly:false,returns:['30-day returns'],countRange:[0,1],unavailChance:0.2},
+  mercari:{priceRange:[0.5,0.88],conditions:['used','new'],freeShip:0.4,shipRange:[3.99,9.99],showsTax:false,taxRate:0,feeChance:0,feeRange:[0,0],sellers:['mercari_seller_284','thriftfinds_shop','quickship_electronics'],officialChance:0,deliveryRange:[3,7],localOnly:false,returns:['3-day return window (buyer protection)'],countRange:[1,3],unavailChance:0.1},
+  offerup:{priceRange:[0.4,0.82],conditions:['used'],freeShip:0,shipRange:[0,0],showsTax:false,taxRate:0,feeChance:0,feeRange:[0,0],sellers:['Local Seller (Alex R.)','Local Seller (Priya)','Local Seller (D. Nguyen)'],officialChance:0,deliveryRange:[0,0],localOnly:true,returns:['No returns — cash on pickup'],countRange:[1,2],unavailChance:0.15},
+  etsy:{priceRange:[0.95,1.3],conditions:['new'],freeShip:0.3,shipRange:[3.99,9.99],showsTax:true,taxRate:0.0725,feeChance:0,feeRange:[0,0],sellers:['HandmadeGoodsCo','VintageFindsShop'],officialChance:0,deliveryRange:[4,10],localOnly:false,returns:['Case-by-case, seller-defined'],countRange:[0,1],unavailChance:0.5},
+  aliexpress:{priceRange:[0.35,0.7],conditions:['new'],freeShip:0.6,shipRange:[0,4.99],showsTax:false,taxRate:0,feeChance:0.5,feeRange:[2,8],sellers:['Global Tech Direct Store','Shenzhen Electronics Co.'],officialChance:0,deliveryRange:[12,30],localOnly:false,returns:['15-day returns (buyer pays return shipping)'],countRange:[1,2],unavailChance:0.1},
+  'google-shopping':{priceRange:[0.85,1.1],conditions:['new','refurbished'],freeShip:0.6,shipRange:[0,8.99],showsTax:true,taxRate:0.0725,feeChance:0,feeRange:[0,0],sellers:['Multiple retailers (aggregated)'],officialChance:0.3,deliveryRange:[2,6],localOnly:false,returns:['Varies by retailer'],countRange:[2,4],unavailChance:0.05}
+};
+
+function generateListing(variant, cfg, sourceId, index, zip){
+  const seed = sourceId+'-'+variant.id+'-'+index+'-'+(zip||'nozip');
+  const rand = seededRandom(seed);
+  const itemPrice = round2(variant.basePrice * inRange(rand, cfg.priceRange));
+  const condition = pick(rand, cfg.conditions);
+
+  const freeShip = rand() < cfg.freeShip;
+  const shipping = cfg.localOnly ? money(0,true,'Local pickup — no shipping')
+    : freeShip ? money(0,true,'Free shipping')
+    : money(round2(inRange(rand,cfg.shipRange)), true);
+
+  const tax = cfg.showsTax ? money(round2(itemPrice*cfg.taxRate), false, 'Estimated using a typical local sales-tax rate')
+    : money(null, false, 'Not collected at checkout for this source/condition');
+
+  const hasFee = rand() < cfg.feeChance;
+  const fees = hasFee ? money(round2(inRange(rand,cfg.feeRange)), false, 'Estimated import/handling fee') : money(0,true);
+
+  const total = round2(itemPrice + (shipping.amount||0) + (tax.amount||0) + (fees.amount||0));
+  const totalIsFullyKnown = shipping.isKnown && tax.isKnown && fees.isKnown;
+
+  const seller = pick(rand, cfg.sellers);
+  const isOfficial = rand() < cfg.officialChance;
+  const rating = cfg.officialChance>0.5 ? round2(4.3+rand()*0.6) : round2(3.6+rand()*1.3);
+  const ratingCount = Math.floor(inRange(rand,[40,18000]));
+
+  const deliveryDays = cfg.localOnly ? null : Math.round(inRange(rand,cfg.deliveryRange));
+  const deliveryDate = deliveryDays ? new Date(Date.now()+deliveryDays*86400000).toISOString().slice(0,10) : null;
+  const speedLabel = cfg.localOnly ? 'Local pickup'
+    : deliveryDays===null ? null
+    : deliveryDays<=2 ? 'Fast (1-2 days)' : deliveryDays<=5 ? 'Standard (3-5 days)' : 'Slow (6+ days)';
+
+  const av = rand();
+  const availability = av<0.05?'out-of-stock':av<0.15?'limited':'in-stock';
+  const distanceMiles = cfg.localOnly ? Math.round(inRange(rand,[1,22])) : null;
+
+  return {
+    id: sourceId+'-'+variant.id+'-'+index,
+    source: sourceId,
+    productTitle: variant.label,
+    imageUrl: variant.img,
+    condition,
+    seller:{name:seller, rating, ratingCount, isOfficialRetailer:isOfficial},
+    price:{itemPrice, shipping, estimatedTax:tax, fees, total, totalIsFullyKnown},
+    availability,
+    returnPolicy: pick(rand, cfg.returns),
+    delivery:{estimatedDate:deliveryDate, speedLabel, isLocalPickup:cfg.localOnly},
+    url: 'https://example.com/'+sourceId+'/'+variant.id+'?listing='+index,
+    distanceMiles,
+    isDemoData:true,
+    matchConfidence: round2(0.75+rand()*0.24)
+  };
+}
+
+async function providerSearch(sourceId, variant, zip){
+  await new Promise(r=>setTimeout(r, 180 + Math.random()*420));
+  const cfg = CONFIGS[sourceId];
+  if(!variant) return [];
+  const availCheck = seededRandom(sourceId+'-avail-'+variant.id)();
+  if(availCheck < cfg.unavailChance) throw new Error('unavailable');
+  const countRand = seededRandom(sourceId+'-count-'+variant.id);
+  const count = Math.round(inRange(countRand, cfg.countRange));
+  const out = [];
+  for(let i=0;i<count;i++) out.push(generateListing(variant, cfg, sourceId, i, zip));
+  return out;
+}
+
+/* =========================================================================
+   4. AGGREGATOR — concurrent provider calls, timeout/retry, dedup, ranking,
+      similar products, and "is this a good deal" verdict for URL search.
+   ========================================================================= */
+const PROVIDER_TIMEOUT_MS = 4000;
+
+function withTimeout(promise, ms){
+  return new Promise((resolve,reject)=>{
+    const t=setTimeout(()=>reject(new Error('timeout')), ms);
+    promise.then(v=>{clearTimeout(t);resolve(v);}, e=>{clearTimeout(t);reject(e);});
+  });
+}
+function humanizeError(sourceId, status){
+  const label = SOURCE_MAP[sourceId].label;
+  if(status==='timeout') return label+' took too long to respond and was skipped.';
+  if(status==='unavailable') return label+' unavailable right now.';
+  return label+" couldn't be reached.";
+}
+async function runProvider(sourceId, variant, zip){
+  const started = Date.now();
+  try{
+    const results = await withTimeout(providerSearch(sourceId, variant, zip), PROVIDER_TIMEOUT_MS);
+    return {source:sourceId, status:'ok', results, tookMs:Date.now()-started};
+  }catch(err){
+    // one retry on timeout
+    if(err.message==='timeout'){
+      try{
+        const results = await withTimeout(providerSearch(sourceId, variant, zip), PROVIDER_TIMEOUT_MS);
+        return {source:sourceId, status:'ok', results, tookMs:Date.now()-started};
+      }catch(err2){
+        const status = err2.message==='timeout'?'timeout':err2.message==='unavailable'?'unavailable':'error';
+        return {source:sourceId, status, message:humanizeError(sourceId,status), results:[], tookMs:Date.now()-started};
+      }
+    }
+    const status = err.message==='unavailable'?'unavailable':'error';
+    return {source:sourceId, status, message:humanizeError(sourceId,status), results:[], tookMs:Date.now()-started};
+  }
+}
+function dedupe(results){
+  const seen = new Map();
+  for(const r of results){
+    const key = r.source+'|'+r.seller.name+'|'+r.condition+'|'+Math.round(r.price.total);
+    if(!seen.has(key)) seen.set(key,r);
+  }
+  return Array.from(seen.values());
+}
+function scoreDeal(d, lowestTotal){
+  const priceScore = lowestTotal>0 ? Math.max(0, 1-(d.price.total-lowestTotal)/lowestTotal) : 1;
+  const conditionScore = d.condition==='new'?1:d.condition==='refurbished'?0.75:d.condition==='open-box'?0.7:0.55;
+  const sellerScore = d.seller.rating ? d.seller.rating/5 : 0.5;
+  const speedScore = d.delivery.speedLabel==='Fast (1-2 days)'?1: d.delivery.speedLabel==='Standard (3-5 days)'?0.7: d.delivery.isLocalPickup?0.6:0.4;
+  const returnScore = d.returnPolicy && !/no returns/i.test(d.returnPolicy) ? 1 : 0.4;
+  return priceScore*0.42 + d.matchConfidence*0.2 + conditionScore*0.14 + sellerScore*0.12 + speedScore*0.07 + returnScore*0.05;
+}
+function buildSimilarProducts(variant){
+  const alts = findSimilarFamilies(variant, 3);
+  return alts.map((alt,i)=>{
+    const itemPrice = alt.basePrice;
+    const shipping = i%2===0 ? 0 : 5.99;
+    const tax = Math.round(itemPrice*0.0725*100)/100;
+    const totalPrice = Math.round((itemPrice+shipping+tax)*100)/100;
+    const cheaper = alt.basePrice < variant.basePrice;
+    return {
+      id:'similar-'+alt.id, name:alt.label, imageUrl:alt.img, itemPrice, totalPrice,
+      mainDifferences: alt.family+' instead of '+variant.family+'; different feature set and design.',
+      whyGoodAlternative: cheaper
+        ? 'Typically '+Math.round((1-alt.basePrice/variant.basePrice)*100)+'% less than '+variant.label+', with comparable core features.'
+        : 'A step up from '+variant.label+' for buyers who want extra features and don\u2019t mind paying more.',
+      source: i%2===0?'amazon':'bestbuy',
+      url:'https://example.com/similar/'+alt.id
+    };
+  });
+}
+function buildOriginalListingVerdict(sourceUrl, results){
+  if(results.length===0) return null;
+  const domainGuess = ['amazon','walmart','target','bestbuy','ebay'].find(k=>sourceUrl.toLowerCase().includes(k));
+  const original = results.find(r=>r.source===domainGuess) || results[0];
+  const comparable = results.filter(r=>r.id!==original.id);
+  if(comparable.length===0) return null;
+  const avg = comparable.reduce((s,r)=>s+r.price.total,0)/comparable.length;
+  const isGoodDeal = original.price.total <= avg;
+  return {
+    isGoodDeal, comparableAverage: Math.round(avg*100)/100, originalTotal: original.price.total,
+    explanation: isGoodDeal
+      ? "The original listing's total of $"+original.price.total.toFixed(2)+" is at or below the $"+avg.toFixed(2)+" average of "+comparable.length+" comparable listing(s) found elsewhere."
+      : "The original listing's total of $"+original.price.total.toFixed(2)+" is above the $"+avg.toFixed(2)+" average of "+comparable.length+" comparable listing(s) found elsewhere — cheaper options exist."
+  };
+}
+
+async function runSearch({rawQuery, sourceUrl, sources, zip, chosenCandidateId}){
+  const match = chosenCandidateId
+    ? {best: CATALOG.find(v=>v.id===chosenCandidateId)||null, candidates:[], ambiguous:false}
+    : sourceUrl ? matchProductFromUrl(sourceUrl) : matchProduct(rawQuery);
+
+  if(match.ambiguous){
+    return {
+      query:rawQuery, resolvedProduct:null,
+      ambiguousCandidates: match.candidates.map(c=>({id:c.id,title:c.label,imageUrl:c.img})),
+      results:[], similarProducts:[], providerOutcomes:[],
+      stats:{lowestTotal:null,averageTotal:null,highestTotal:null,potentialSavings:null},
+      originalListingVerdict:null
+    };
+  }
+
+  if(!match.best){
+    return {
+      query:rawQuery, resolvedProduct:null, ambiguousCandidates:null,
+      results:[], similarProducts:[], providerOutcomes: sources.map(s=>({source:s,status:'ok',results:[],tookMs:0})),
+      stats:{lowestTotal:null,averageTotal:null,highestTotal:null,potentialSavings:null},
+      originalListingVerdict:null, notFound:true
+    };
+  }
+
+  const outcomes = await Promise.all(sources.map(s=>runProvider(s, match.best, zip)));
+  const allResults = dedupe(outcomes.flatMap(o=>o.results));
+
+  const lowestTotal = allResults.length ? Math.min(...allResults.map(r=>r.price.total)) : null;
+  const highestTotal = allResults.length ? Math.max(...allResults.map(r=>r.price.total)) : null;
+  const averageTotal = allResults.length ? Math.round((allResults.reduce((s,r)=>s+r.price.total,0)/allResults.length)*100)/100 : null;
+  const potentialSavings = (averageTotal!==null && lowestTotal!==null) ? Math.round((averageTotal-lowestTotal)*100)/100 : null;
+
+  const ranked = [...allResults].sort((a,b)=>scoreDeal(b,lowestTotal||0)-scoreDeal(a,lowestTotal||0));
+  const similarProducts = buildSimilarProducts(match.best);
+  const originalListingVerdict = sourceUrl ? buildOriginalListingVerdict(sourceUrl, ranked) : null;
+
+  return {
+    query:rawQuery,
+    resolvedProduct:{id:match.best.id, title:match.best.label, imageUrl:match.best.img},
+    ambiguousCandidates:null, results:ranked, similarProducts, providerOutcomes:outcomes,
+    stats:{lowestTotal, averageTotal, highestTotal, potentialSavings},
+    originalListingVerdict
+  };
+}
+
+/* =========================================================================
+   5. BADGES
+   ========================================================================= */
+function computeBadges(results){
+  const map = {};
+  if(results.length===0) return map;
+  const add=(id,badge)=>{ if(!map[id]) map[id]=[]; if(!map[id].some(b=>b.id===badge.id)) map[id].push(badge); };
+  const B = {
+    overall:{id:'overall',label:'Best Overall Deal',icon:'🏆'},
+    lowest:{id:'lowest',label:'Lowest Total Price',icon:'💰'},
+    fastest:{id:'fastest',label:'Fastest Delivery',icon:'🚚'},
+    seller:{id:'seller',label:'Best Seller',icon:'⭐'},
+    value:{id:'value',label:'Best Value',icon:'🔥'}
+  };
+  add(results[0].id, B.overall);
+  const lowestTotal = Math.min(...results.map(r=>r.price.total));
+  results.filter(r=>r.price.total===lowestTotal).forEach(r=>add(r.id,B.lowest));
+
+  const withDelivery = results.filter(r=>r.delivery.speedLabel && !r.delivery.isLocalPickup);
+  if(withDelivery.length){
+    const order=['Fast (1-2 days)','Standard (3-5 days)','Slow (6+ days)'];
+    const fastest = withDelivery.reduce((best,r)=> order.indexOf(r.delivery.speedLabel)<order.indexOf(best.delivery.speedLabel)?r:best);
+    if(fastest.delivery.speedLabel==='Fast (1-2 days)') add(fastest.id,B.fastest);
+  }
+  const rated = results.filter(r=>r.seller.rating!==null && (r.seller.ratingCount||0)>=25);
+  if(rated.length){
+    const best = rated.reduce((a,b)=> (b.seller.rating||0)>(a.seller.rating||0)?b:a);
+    if((best.seller.rating||0)>=4.5) add(best.id,B.seller);
+  }
+  const avgTotal = results.reduce((s,r)=>s+r.price.total,0)/results.length;
+  const valueCandidates = results.filter(r=>r.price.total<avgTotal && r.condition==='new' && r.price.total!==lowestTotal);
+  if(valueCandidates.length){
+    const best = valueCandidates.reduce((a,b)=> b.matchConfidence>a.matchConfidence?b:a);
+    add(best.id,B.value);
+  }
+  return map;
+}
+
+/* =========================================================================
+   6. PERSISTENCE — localStorage-backed history / watchlist / prefs
+   ========================================================================= */
+const LS = {
+  history:'dealfinder.history.v1', watchlist:'dealfinder.watchlist.v1',
+  sources:'dealfinder.sources.v1', zip:'dealfinder.zip.v1', theme:'dealfinder.theme.v1'
+};
+function lsGet(key, fallback){
+  try{ const raw = localStorage.getItem(key); return raw?JSON.parse(raw):fallback; }catch(e){ return fallback; }
+}
+function lsSet(key, value){ try{ localStorage.setItem(key, JSON.stringify(value)); }catch(e){} }
+
+function getHistory(){ return lsGet(LS.history, []); }
+function addHistory(query){
+  const existing = getHistory().filter(h=>h.query.toLowerCase()!==query.toLowerCase());
+  const updated = [{query,timestamp:Date.now()}, ...existing].slice(0,15);
+  lsSet(LS.history, updated); return updated;
+}
+function clearHistoryLS(){ lsSet(LS.history, []); }
+
+function getWatchlist(){ return lsGet(LS.watchlist, []); }
+function toggleWatchlist(deal){
+  const current = getWatchlist();
+  const exists = current.some(w=>w.id===deal.id);
+  const updated = exists ? current.filter(w=>w.id!==deal.id) : [{
+    id:deal.id, productTitle:deal.productTitle, source:deal.source, itemPrice:deal.price.itemPrice,
+    totalPrice:deal.price.total, savedAt:Date.now(), url:deal.url, imageUrl:deal.imageUrl
+  }, ...current];
+  lsSet(LS.watchlist, updated); return updated;
+}
+function removeFromWatchlist(id){
+  const updated = getWatchlist().filter(w=>w.id!==id);
+  lsSet(LS.watchlist, updated); return updated;
+}
+function getSavedSources(){ return lsGet(LS.sources, ALL_SOURCE_IDS); }
+function saveSources(ids){ lsSet(LS.sources, ids); }
+function getSavedZip(){ return lsGet(LS.zip, ''); }
+function saveZip(zip){ lsSet(LS.zip, zip); }
+
+/* =========================================================================
+   7. FORMATTING HELPERS
+   ========================================================================= */
+function fmtMoney(n){ return (n===null||n===undefined) ? 'Unknown' : n.toLocaleString('en-US',{style:'currency',currency:'USD'}); }
+function fmtDate(iso){ if(!iso) return 'Unknown'; const d=new Date(iso+'T00:00:00'); return d.toLocaleDateString('en-US',{month:'short',day:'numeric'}); }
+function srcLabel(id){ return SOURCE_MAP[id] ? SOURCE_MAP[id].label : id; }
+function esc(s){ return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function isLikelyUrl(input){ try{ const u=new URL(input); return u.protocol.startsWith('http'); }catch(e){ return false; } }
+
+/* =========================================================================
+   8. APP STATE + RENDERING
+   ========================================================================= */
+const state = {
+  selectedSources: new Set(getSavedSources()),
+  zip: getSavedZip(),
+  loading: false,
+  error: null,
+  response: null,
+  pendingQuery: null,
+  filters: defaultFilters(),
+  sort: 'best-overall',
+  history: getHistory(),
+  watchlist: getWatchlist(),
+  watchlistOpen: false,
+  dark: window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+};
+
+function defaultFilters(){
+  return { maxTotal:'', minItem:'', maxItem:'', conditions:new Set(), freeShipOnly:false, localOnly:false, onlineOnly:false, minRating:'' };
+}
+
+document.documentElement.classList.toggle('dark', state.dark);
+document.getElementById('darkToggle').textContent = state.dark ? '☀️' : '🌙';
+
+/* ---- Marketplace toggles (shared render for pre-search + sidebar) ---- */
+function renderSourceToggles(container){
+  const groups = [
+    {title:'Retailers', items:SOURCES.filter(s=>s.category==='retailer')},
+    {title:'Marketplaces', items:SOURCES.filter(s=>s.category==='marketplace')},
+    {title:'Aggregators', items:SOURCES.filter(s=>s.category==='aggregator')}
+  ];
+  let html = '<div class="panel-head"><h3 style="margin:0">Sources ('+state.selectedSources.size+' selected)</h3>'+
+    '<div><button class="link-btn" data-act="selectAll">Select All</button> · <button class="link-btn muted" data-act="clearAll">Clear All</button></div></div>';
+  groups.forEach(g=>{
+    html += '<div class="src-group" style="margin-top:10px"><h4>'+g.title+'</h4><div class="src-grid">';
+    g.items.forEach(s=>{
+      const checked = state.selectedSources.has(s.id) ? 'checked' : '';
+      const demoTag = (s.integration.indexOf('demo-only')>-1) ? '<span class="demo-tag">(demo)</span>' : '';
+      html += '<label title="'+esc(s.integration)+'"><input type="checkbox" data-src="'+s.id+'" '+checked+'/>'+esc(s.label)+' '+demoTag+'</label>';
+    });
+    html += '</div></div>';
+  });
+  container.innerHTML = html;
+
+  container.querySelectorAll('input[data-src]').forEach(inp=>{
+    inp.addEventListener('change', ()=>{
+      const id = inp.getAttribute('data-src');
+      if(inp.checked) state.selectedSources.add(id); else state.selectedSources.delete(id);
+      saveSources(Array.from(state.selectedSources));
+      renderAll();
+    });
+  });
+  container.querySelector('[data-act="selectAll"]').addEventListener('click', ()=>{
+    state.selectedSources = new Set(ALL_SOURCE_IDS); saveSources(Array.from(state.selectedSources)); renderAll();
+  });
+  container.querySelector('[data-act="clearAll"]').addEventListener('click', ()=>{
+    state.selectedSources = new Set(); saveSources([]); renderAll();
+  });
+}
+
+/* ---- History panel ---- */
+function renderHistoryPanel(){
+  const panel = document.getElementById('historyPanel');
+  if(state.history.length===0){ panel.style.display='none'; return; }
+  panel.style.display='block';
+  let html = '<div class="panel-head"><h3 style="margin:0">Recent Searches</h3><button class="link-btn muted" id="clearHistBtn">Clear History</button></div><div class="hist-wrap">';
+  state.history.forEach(h=>{
+    const label = h.query.length>40 ? h.query.slice(0,40)+'…' : h.query;
+    html += '<button class="hist-chip" data-q="'+esc(h.query)+'">'+esc(label)+'</button>';
+  });
+  html += '</div>';
+  panel.innerHTML = html;
+  panel.querySelectorAll('.hist-chip').forEach(btn=>{
+    btn.addEventListener('click', ()=> handleSearch(btn.getAttribute('data-q'), state.zip));
+  });
+  document.getElementById('clearHistBtn').addEventListener('click', ()=>{
+    clearHistoryLS(); state.history=[]; renderHistoryPanel();
+  });
+}
+
+/* ---- Loading stages ---- */
+const STAGES = ['Understanding product','Searching retailers','Searching marketplaces','Comparing prices','Calculating shipping','Finding similar products','Ranking deals'];
+let stageTimer=null, stageIndex=0;
+function renderLoading(){
+  const area = document.getElementById('loadingArea');
+  stageIndex = 0;
+  area.innerHTML = '<div class="stages-box fade-up"><p class="status">Searching '+state.selectedSources.size+' source'+(state.selectedSources.size===1?'':'s')+'…</p><div id="stagesList"></div></div>';
+  renderStages();
+  clearInterval(stageTimer);
+  stageTimer = setInterval(()=>{
+    stageIndex = Math.min(stageIndex+1, STAGES.length-1);
+    renderStages();
+  }, 480);
+}
+function renderStages(){
+  const list = document.getElementById('stagesList');
+  if(!list) return;
+  list.innerHTML = STAGES.map((s,i)=>{
+    const cls = i<stageIndex?'done':i===stageIndex?'active':'';
+    const mark = i<stageIndex ? '✓' : '';
+    const pulse = i===stageIndex ? '<span class="pulse"></span>' : '';
+    return '<div class="stage '+cls+'"><span class="dot">'+mark+'</span><span>'+s+'</span>'+pulse+'</div>';
+  }).join('');
+}
+function clearLoading(){ clearInterval(stageTimer); document.getElementById('loadingArea').innerHTML=''; }
+
+/* ---- Ambiguous picker ---- */
+function renderAmbiguous(candidates){
+  const area = document.getElementById('ambiguousArea');
+  let html = '<div class="amb-box fade-up"><h3>Which one did you mean?</h3><div class="amb-grid">';
+  candidates.forEach(c=>{
+    html += '<button class="amb-card" data-id="'+c.id+'"><img src="'+c.imageUrl+'" alt="'+esc(c.title)+'"/>'+esc(c.title)+'</button>';
+  });
+  html += '</div></div>';
+  area.innerHTML = html;
+  area.querySelectorAll('.amb-card').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const id = btn.getAttribute('data-id');
+      if(state.pendingQuery) performSearch(state.pendingQuery, state.zip, id);
+    });
+  });
+}
+
+/* ---- Filtering & sorting ---- */
+function applyFilters(results){
+  const f = state.filters;
+  return results.filter(r=>{
+    if(f.maxTotal && r.price.total > parseFloat(f.maxTotal)) return false;
+    if(f.minItem && r.price.itemPrice < parseFloat(f.minItem)) return false;
+    if(f.maxItem && r.price.itemPrice > parseFloat(f.maxItem)) return false;
+    if(f.conditions.size>0 && !f.conditions.has(r.condition)) return false;
+    if(f.freeShipOnly && !(r.price.shipping.isKnown && r.price.shipping.amount===0)) return false;
+    if(f.localOnly && !r.delivery.isLocalPickup) return false;
+    if(f.onlineOnly && r.delivery.isLocalPickup) return false;
+    if(f.minRating){ if(!r.seller.rating || r.seller.rating < parseFloat(f.minRating)) return false; }
+    return true;
+  });
+}
+function sortResults(results, sort){
+  const arr = results.slice();
+  switch(sort){
+    case 'lowest-total': return arr.sort((a,b)=>a.price.total-b.price.total);
+    case 'lowest-item': return arr.sort((a,b)=>a.price.itemPrice-b.price.itemPrice);
+    case 'fastest-delivery': {
+      const rank = s => s==='Fast (1-2 days)'?0:s==='Standard (3-5 days)'?1:s==='Local pickup'?2:s==='Slow (6+ days)'?3:4;
+      return arr.sort((a,b)=>rank(a.delivery.speedLabel)-rank(b.delivery.speedLabel));
+    }
+    case 'best-seller': case 'highest-rated': return arr.sort((a,b)=>(b.seller.rating||0)-(a.seller.rating||0));
+    case 'best-value': return arr.sort((a,b)=> (b.matchConfidence/b.price.total) - (a.matchConfidence/a.price.total));
+    default: return arr;
+  }
+}
+
+/* ---- Filters panel ---- */
+function renderFiltersPanel(container, resultCount){
+  const f = state.filters;
+  const conds = ['new','used','refurbished','open-box'];
+  let html = '<div class="panel-head"><h3 style="margin:0">Filters</h3><button class="link-btn muted" id="resetFiltersBtn">Reset</button></div><div class="filters">';
+  html += '<div class="row"><label class="small">Max total price</label><input type="number" min="0" id="f-maxTotal" value="'+esc(f.maxTotal)+'" placeholder="No limit"/></div>';
+  html += '<div class="row" style="display:flex;gap:8px"><div style="flex:1"><label class="small">Min item price</label><input type="number" min="0" id="f-minItem" value="'+esc(f.minItem)+'"/></div><div style="flex:1"><label class="small">Max item price</label><input type="number" min="0" id="f-maxItem" value="'+esc(f.maxItem)+'"/></div></div>';
+  html += '<div class="row"><label class="small">Condition</label><div class="cond-toggles">';
+  conds.forEach(c=>{
+    html += '<button class="cond-btn '+(f.conditions.has(c)?'active':'')+'" data-cond="'+c+'">'+c.replace('-',' ')+'</button>';
+  });
+  html += '</div></div>';
+  html += '<div class="row"><label class="small">Min seller rating</label><select id="f-minRating">'+
+    '<option value="">Any</option><option value="3"'+(f.minRating==='3'?' selected':'')+'>3.0+</option>'+
+    '<option value="4"'+(f.minRating==='4'?' selected':'')+'>4.0+</option>'+
+    '<option value="4.5"'+(f.minRating==='4.5'?' selected':'')+'>4.5+</option></select></div>';
+  html += '<label class="check-row"><input type="checkbox" id="f-freeShip" '+(f.freeShipOnly?'checked':'')+'/>Free shipping only</label>';
+  html += '<label class="check-row"><input type="checkbox" id="f-local" '+(f.localOnly?'checked':'')+'/>Local pickup only</label>';
+  html += '<label class="check-row"><input type="checkbox" id="f-online" '+(f.onlineOnly?'checked':'')+'/>Online / shippable only</label>';
+  html += '</div><p class="filter-count">'+resultCount+' result'+(resultCount===1?'':'s')+' match</p>';
+  container.innerHTML = html;
+
+  const bind = (id, key, isCheckbox) => {
+    document.getElementById(id).addEventListener(isCheckbox?'change':'input', e=>{
+      state.filters[key] = isCheckbox ? e.target.checked : e.target.value;
+      renderResults();
+    });
+  };
+  bind('f-maxTotal','maxTotal',false); bind('f-minItem','minItem',false); bind('f-maxItem','maxItem',false);
+  bind('f-freeShip','freeShipOnly',true); bind('f-local','localOnly',true); bind('f-online','onlineOnly',true);
+  document.getElementById('f-minRating').addEventListener('change', e=>{ state.filters.minRating = e.target.value; renderResults(); });
+  container.querySelectorAll('.cond-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const c = btn.getAttribute('data-cond');
+      if(state.filters.conditions.has(c)) state.filters.conditions.delete(c); else state.filters.conditions.add(c);
+      renderResults();
+    });
+  });
+  document.getElementById('resetFiltersBtn').addEventListener('click', ()=>{ state.filters = defaultFilters(); renderResults(); });
+}
+
+/* ---- Result card ---- */
+function renderResultCard(deal, badges){
+  const watchlisted = state.watchlist.some(w=>w.id===deal.id);
+  let badgesHtml = '';
+  if(badges.length){
+    badgesHtml = '<div class="badges-row">'+badges.map(b=>'<span class="deal-badge">'+b.icon+' '+b.label+'</span>').join('')+'</div>';
+  }
+  const availClass = deal.availability==='in-stock'?'avail-in':deal.availability==='limited'?'avail-limited':deal.availability==='out-of-stock'?'avail-out':'';
+  const availLabel = deal.availability==='in-stock'?'In stock':deal.availability==='limited'?'Limited stock':deal.availability==='out-of-stock'?'Out of stock':'Availability unknown';
+  const deliveryMeta = deal.delivery.isLocalPickup
+    ? 'Local pickup'+(deal.distanceMiles!==null?' · '+deal.distanceMiles+' mi away':'')
+    : (deal.delivery.speedLabel||'Delivery speed unknown')+(deal.delivery.estimatedDate?' · Arrives ~'+fmtDate(deal.delivery.estimatedDate):'');
+
+  const calcRow = (label, m) => {
+    const val = m.amount!==null ? fmtMoney(m.amount) : 'Unknown';
+    const estTag = (!m.isKnown && val!=='Unknown') ? ' (est.)' : '';
+    return '<div class="calc-row"><span>'+label+(m.note?' <span class="note">— '+esc(m.note)+'</span>':'')+'</span><span class="'+(m.isKnown?'':'est')+'">'+val+estTag+'</span></div>';
+  };
+
+  return (
+    '<div class="deal-card fade-up" data-id="'+deal.id+'">'+
+      badgesHtml+
+      '<div class="deal-flex">'+
+        '<div class="deal-img"><img src="'+deal.imageUrl+'" alt="'+esc(deal.productTitle)+'" loading="lazy"/></div>'+
+        '<div class="deal-mid">'+
+          '<div style="display:flex;justify-content:space-between;gap:8px">'+
+            '<div><p class="deal-src">'+esc(srcLabel(deal.source))+'</p><p class="deal-title">'+esc(deal.productTitle)+'</p></div>'+
+            '<button class="heart-btn '+(watchlisted?'on':'')+'" data-wl="'+deal.id+'">'+(watchlisted?'♥':'♡')+'</button>'+
+          '</div>'+
+          '<div class="chips">'+
+            '<span class="cond-chip cond-'+deal.condition+'">'+deal.condition.replace('-',' ')+'</span>'+
+            (deal.seller.name?'<span>Sold by '+esc(deal.seller.name)+(deal.seller.isOfficialRetailer?' ✓':'')+'</span>':'')+
+            (deal.seller.rating!==null?'<span>★ '+deal.seller.rating.toFixed(1)+' ('+deal.seller.ratingCount.toLocaleString()+')</span>':'')+
+          '</div>'+
+          '<div class="meta-row"><span class="'+availClass+'">'+availLabel+'</span><span>'+deliveryMeta+'</span>'+(deal.returnPolicy?'<span>'+esc(deal.returnPolicy)+'</span>':'')+'</div>'+
+        '</div>'+
+        '<div class="deal-right">'+
+          '<div>'+
+            '<div class="total-price">'+fmtMoney(deal.price.total)+'<div class="lab">total</div></div>'+
+            (!deal.price.totalIsFullyKnown?'<div class="est-flag">includes estimates</div>':'')+
+            '<div class="item-price">Item: '+fmtMoney(deal.price.itemPrice)+'</div>'+
+          '</div>'+
+          '<a class="view-btn" href="'+deal.url+'" target="_blank" rel="noopener noreferrer sponsored">View Listing</a>'+
+        '</div>'+
+      '</div>'+
+      '<button class="calc-toggle" data-calc="'+deal.id+'">How we calculated this ▼</button>'+
+      '<div class="calc-box" id="calc-'+deal.id+'" style="display:none">'+
+        calcRow('Item price', {amount:deal.price.itemPrice, isKnown:true}) +
+        calcRow('Shipping', deal.price.shipping) +
+        calcRow('Estimated tax', deal.price.estimatedTax) +
+        calcRow('Fees', deal.price.fees) +
+        '<div class="calc-total"><span>Total</span><span>'+fmtMoney(deal.price.total)+'</span></div>'+
+      '</div>'+
+    '</div>'
+  );
+}
+
+/* ---- Similar products ---- */
+function renderSimilarProducts(items){
+  if(!items || items.length===0) return '';
+  const cheapest = items.reduce((a,b)=> b.totalPrice<a.totalPrice?b:a);
+  let html = '<section class="similar"><h2>Similar Products You May Like</h2><div class="similar-grid">';
+  items.forEach(item=>{
+    html += '<div class="similar-card">'+
+      (item.id===cheapest.id?'<span class="alt-flag">Best Cheaper Alternative</span>':'')+
+      '<img src="'+item.imageUrl+'" alt="'+esc(item.name)+'"/>'+
+      '<p class="src">'+esc(srcLabel(item.source))+'</p>'+
+      '<p class="name">'+esc(item.name)+'</p>'+
+      '<p class="price">'+fmtMoney(item.totalPrice)+' <span class="lab">total</span></p>'+
+      '<p class="diff">'+esc(item.mainDifferences)+'</p>'+
+      '<p class="why">'+esc(item.whyGoodAlternative)+'</p>'+
+      '<a class="out-link" href="'+item.url+'" target="_blank" rel="noopener noreferrer">View</a>'+
+    '</div>';
+  });
+  html += '</div></section>';
+  return html;
+}
+
+/* ---- Provider status strip ---- */
+let statusOpen = false;
+function renderStatusStrip(outcomes){
+  if(!outcomes || outcomes.length===0) return '';
+  const failed = outcomes.filter(o=>o.status!=='ok');
+  const ok = outcomes.filter(o=>o.status==='ok');
+  let html = '<div class="status-strip"><button id="statusToggle">'+
+    '<span>Searched '+ok.length+'/'+outcomes.length+' sources successfully'+(failed.length?' · '+failed.length+' unavailable':'')+'</span>'+
+    '<span>'+(statusOpen?'▲':'▼')+'</span></button>';
+  if(statusOpen){
+    html += '<ul>';
+    outcomes.forEach(o=>{
+      const txt = o.status==='ok' ? o.results.length+' listing'+(o.results.length===1?'':'s') : esc(o.message);
+      html += '<li><span>'+esc(srcLabel(o.source))+'</span><span class="'+(o.status==='ok'?'ok-txt':'warn-txt')+'">'+txt+'</span></li>';
+    });
+    html += '</ul>';
+  }
+  html += '</div>';
+  return html;
+}
+
+/* ---- Price comparison ---- */
+function renderPriceComparison(stats){
+  if(stats.lowestTotal===null) return '';
+  const range = (stats.highestTotal - stats.lowestTotal) || 1;
+  const avgPct = Math.min(100, Math.max(0, ((stats.averageTotal - stats.lowestTotal)/range)*100));
+  let html = '<div class="panel">'+
+    '<div class="compare-grid">'+
+      '<div><div class="lab">Lowest</div><div class="val low">'+fmtMoney(stats.lowestTotal)+'</div></div>'+
+      '<div><div class="lab">Average</div><div class="val">'+fmtMoney(stats.averageTotal)+'</div></div>'+
+      '<div><div class="lab">Highest</div><div class="val high">'+fmtMoney(stats.highestTotal)+'</div></div>'+
+    '</div>'+
+    '<div class="bar"><div class="dot" style="left:0%;background:#059669"></div><div class="dot" style="left:'+avgPct+'%;background:#334155"></div></div>';
+  if(stats.potentialSavings!==null && stats.potentialSavings>0){
+    html += '<p class="save-line">You could save '+fmtMoney(stats.potentialSavings)+' vs. the average by picking the lowest total.</p>';
+  }
+  html += '</div>';
+  return html;
+}
+
+/* ---- Original listing verdict ---- */
+function renderVerdict(v){
+  if(!v) return '';
+  const cls = v.isGoodDeal ? 'verdict-good' : 'verdict-bad';
+  const title = v.isGoodDeal ? 'Yes — below the comparable average' : 'No — cheaper options were found';
+  return '<div class="verdict-box '+cls+'"><h3>Is this a good deal?</h3><div class="verdict-title">'+title+'</div><p class="expl">'+esc(v.explanation)+'</p></div>';
+}
+
+/* ---- Full results render ---- */
+function renderResults(){
+  const area = document.getElementById('resultsArea');
+  const r = state.response;
+  if(!r || r.ambiguousCandidates){ area.innerHTML=''; return; }
+
+  const filtered = applyFilters(r.results);
+  const sorted = sortResults(filtered, state.sort);
+  const badgeMap = computeBadges(r.results);
+
+  let html = '<div class="results-layout">';
+  html += '<aside class="sidebar" id="sidebarSources"></aside>';
+  html += '<div class="content">';
+
+  if(r.resolvedProduct){
+    html += '<div class="results-head"><h2>Results for '+esc(r.resolvedProduct.title)+'</h2>'+
+      '<div><label style="font-size:12px;color:var(--muted);margin-right:6px">Sort:</label>'+
+      '<select id="sortSelect">'+
+        ['best-overall:Best Overall','lowest-total:Lowest Total Price','lowest-item:Lowest Item Price','fastest-delivery:Fastest Delivery','best-seller:Best Seller','highest-rated:Highest Rated']
+          .map(o=>{ const [v,l]=o.split(':'); return '<option value="'+v+'" '+(state.sort===v?'selected':'')+'>'+l+'</option>'; }).join('')+
+      '</select></div></div>';
+  }
+
+  html += renderStatusStrip(r.providerOutcomes);
+  if(r.originalListingVerdict) html += renderVerdict(r.originalListingVerdict);
+  html += renderPriceComparison(r.stats);
+
+  if(sorted.length===0){
+    html += '<div class="empty-box">No results match your current filters. Try loosening a filter or selecting more sources.</div>';
+  } else {
+    html += '<div>'+sorted.map(d=>renderResultCard(d, badgeMap[d.id]||[])).join('')+'</div>';
+  }
+
+  html += renderSimilarProducts(r.similarProducts);
+  html += '</div></div>';
+  area.innerHTML = html;
+
+  // wire sidebar
+  const sidebar = document.getElementById('sidebarSources');
+  const srcPanel = document.createElement('div'); srcPanel.className='panel';
+  const filtPanel = document.createElement('div'); filtPanel.className='panel';
+  sidebar.appendChild(srcPanel); sidebar.appendChild(filtPanel);
+  renderSourceToggles(srcPanel);
+  renderFiltersPanel(filtPanel, sorted.length);
+
+  // wire sort
+  const sortSel = document.getElementById('sortSelect');
+  if(sortSel) sortSel.addEventListener('change', e=>{ state.sort = e.target.value; renderResults(); });
+
+  // wire status strip toggle
+  const statusBtn = document.getElementById('statusToggle');
+  if(statusBtn) statusBtn.addEventListener('click', ()=>{ statusOpen = !statusOpen; renderResults(); });
+
+  // wire watchlist hearts
+  area.querySelectorAll('[data-wl]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const id = btn.getAttribute('data-wl');
+      const deal = r.results.find(d=>d.id===id);
+      if(deal){ state.watchlist = toggleWatchlist(deal); updateWatchlistUI(); renderResults(); }
+    });
+  });
+
+  // wire calc toggles
+  area.querySelectorAll('[data-calc]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const id = btn.getAttribute('data-calc');
+      const box = document.getElementById('calc-'+id);
+      const showing = box.style.display !== 'none';
+      box.style.display = showing ? 'none' : 'block';
+      btn.textContent = 'How we calculated this ' + (showing ? '▼' : '▲');
+    });
+  });
+}
+
+/* ---- Watchlist drawer ---- */
+function updateWatchlistUI(){
+  const countEl = document.getElementById('wlCount');
+  if(state.watchlist.length>0){ countEl.style.display='flex'; countEl.textContent = state.watchlist.length; }
+  else countEl.style.display='none';
+
+  const itemsEl = document.getElementById('watchlistItems');
+  if(state.watchlist.length===0){
+    itemsEl.innerHTML = '<p style="font-size:13px;color:var(--muted)">No saved deals yet. Tap the heart on any result to save it here.</p>';
+    return;
+  }
+  itemsEl.innerHTML = state.watchlist.map(item=>(
+    '<div class="wl-item">'+
+      '<img src="'+item.imageUrl+'" alt="'+esc(item.productTitle)+'"/>'+
+      '<div class="mid"><p class="src">'+esc(srcLabel(item.source))+'</p>'+
+        '<p class="title">'+esc(item.productTitle)+'</p>'+
+        '<p class="price">'+fmtMoney(item.totalPrice)+'</p>'+
+        '<p class="date">Saved '+new Date(item.savedAt).toLocaleDateString()+'</p></div>'+
+      '<div class="right"><button class="remove-link" data-rm="'+item.id+'">Remove</button>'+
+        '<a href="'+item.url+'" target="_blank" rel="noopener noreferrer" style="font-size:12px;font-weight:600;color:var(--brand)">View</a></div>'+
+    '</div>'
+  )).join('');
+  itemsEl.querySelectorAll('[data-rm]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      state.watchlist = removeFromWatchlist(btn.getAttribute('data-rm'));
+      updateWatchlistUI(); renderResults();
+    });
+  });
+}
+
+/* =========================================================================
+   9. SEARCH FLOW
+   ========================================================================= */
+async function performSearch(query, zip, chosenCandidateId){
+  if(state.selectedSources.size===0){
+    state.error = 'Select at least one marketplace or retailer to search.';
+    renderError(); return;
+  }
+  state.loading = true; state.error = null; state.response = null; state.pendingQuery = query;
+  state.filters = defaultFilters(); state.sort = 'best-overall';
+
+  document.getElementById('errorArea').innerHTML = '';
+  document.getElementById('ambiguousArea').innerHTML = '';
+  document.getElementById('resultsArea').innerHTML = '';
+  document.getElementById('preSearchArea').style.display = 'none';
+  document.getElementById('heroSection').style.display = 'none';
+  renderLoading();
+  document.getElementById('searchBtn').disabled = true;
+  document.getElementById('searchBtn').textContent = 'Searching…';
+
+  const sourceUrl = isLikelyUrl(query) ? query : undefined;
+
+  try{
+    const result = await runSearch({
+      rawQuery: query, sourceUrl, sources: Array.from(state.selectedSources), zip, chosenCandidateId
+    });
+
+    clearLoading();
+    document.getElementById('searchBtn').disabled = false;
+    document.getElementById('searchBtn').textContent = 'Find Best Deals';
+
+    if(result.notFound){
+      state.error = "We couldn't find that product. Try a more specific name (brand + model), or paste a direct product URL.";
+      renderError();
+      return;
+    }
+    if(result.ambiguousCandidates){
+      state.response = result;
+      renderAmbiguous(result.ambiguousCandidates);
+      return;
+    }
+
+    state.response = result;
+    state.history = addHistory(query);
+    if(zip) saveZip(zip);
+    renderResults();
+  }catch(e){
+    clearLoading();
+    document.getElementById('searchBtn').disabled = false;
+    document.getElementById('searchBtn').textContent = 'Find Best Deals';
+    state.error = 'Something went wrong while searching. Please try again.';
+    renderError();
+  }
+}
+function renderError(){
+  const area = document.getElementById('errorArea');
+  area.innerHTML = state.error ? '<div class="error-box fade-up">'+esc(state.error)+'</div>' : '';
+}
+function handleSearch(query, zip){
+  if(!query || !query.trim()) return;
+  performSearch(query.trim(), (zip||'').trim());
+}
+
+/* =========================================================================
+   10. WIRE UP STATIC UI
+   ========================================================================= */
+function renderPreSearch(){
+  renderSourceToggles(document.getElementById('sourcesPanelPre'));
+  renderHistoryPanel();
+}
+function renderAll(){
+  // re-render whichever panel(s) are currently visible
+  if(document.getElementById('preSearchArea').style.display !== 'none'){
+    renderPreSearch();
+  }
+  if(state.response && !state.response.ambiguousCandidates){
+    renderResults();
+  }
+}
+
+document.getElementById('searchBtn').addEventListener('click', ()=>{
+  const q = document.getElementById('searchInput').value;
+  handleSearch(q, state.zip);
+});
+document.getElementById('searchInput').addEventListener('keydown', e=>{
+  if(e.key==='Enter'){ handleSearch(e.target.value, state.zip); }
+});
+
+const zipRow = document.getElementById('zipRow');
+function renderZipRow(){
+  if(state.zip){
+    zipRow.innerHTML = '<input type="text" class="zip-input" id="zipInput" value="'+esc(state.zip)+'" placeholder="ZIP code (optional)"/> <button class="zip-link" id="zipRemove" style="margin-left:6px">remove</button>';
+    document.getElementById('zipInput').addEventListener('input', e=>{ state.zip = e.target.value; });
+    document.getElementById('zipRemove').addEventListener('click', ()=>{ state.zip=''; renderZipRow(); });
+  } else {
+    zipRow.innerHTML = '<button class="zip-link" id="zipLinkBtn">+ Add ZIP code for more accurate shipping, tax &amp; local pickup results</button>';
+    document.getElementById('zipLinkBtn').addEventListener('click', ()=>{
+      state.zip = ' ';
+      zipRow.innerHTML = '<input type="text" class="zip-input" id="zipInput" value="" placeholder="ZIP code (optional)"/> <button class="zip-link" id="zipRemove" style="margin-left:6px">remove</button>';
+      document.getElementById('zipInput').addEventListener('input', e=>{ state.zip = e.target.value; });
+      document.getElementById('zipRemove').addEventListener('click', ()=>{ state.zip=''; renderZipRow(); });
+      document.getElementById('zipInput').focus();
+    });
+  }
+}
+renderZipRow();
+
+document.getElementById('darkToggle').addEventListener('click', ()=>{
+  state.dark = !state.dark;
+  document.documentElement.classList.toggle('dark', state.dark);
+  document.getElementById('darkToggle').textContent = state.dark ? '☀️' : '🌙';
+});
+
+const drawer = document.getElementById('watchlistDrawer');
+const overlay = document.getElementById('drawerOverlay');
+document.getElementById('watchlistToggle').addEventListener('click', ()=>{
+  drawer.classList.add('open'); overlay.classList.add('open');
+});
+document.getElementById('drawerClose').addEventListener('click', closeDrawer);
+overlay.addEventListener('click', closeDrawer);
+function closeDrawer(){ drawer.classList.remove('open'); overlay.classList.remove('open'); }
+
+/* ---- Init ---- */
+renderPreSearch();
+updateWatchlistUI();
+
+})();
+</script>
+</body>
+</html>
